@@ -131,7 +131,6 @@ class PipelineModel(BaseModel):
 
 
 class StageModel(BaseModel):
-
     STATUS_BUILDING = 'Building'
 
     def __init__(self, data) -> None:

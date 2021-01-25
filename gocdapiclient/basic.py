@@ -6,6 +6,11 @@ class Basic(Endpoint):
     base_path = 'go/api/'
 
     def __init__(self, server) -> None:
+        """ A wrapper for the "Go API"
+
+           Get version = '/go/api/version'
+           Get current user = '/go/api/current_user'
+           """
         super().__init__()
 
         self.server = server

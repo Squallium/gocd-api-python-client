@@ -7,8 +7,8 @@ class Artifact(Endpoint):
     def __init__(self, server, pipeline_name, pipeline_counter, stage_name, stage_counter) -> None:
         """ A wrapper for the "Go Artifacts API"
 
-           all_artifact = '/go/files/:pipeline_name/:pipeline_counter/:stage_name/:stage_counter/:job_name.json'
-           get_artifact = '/go/files/:pipeline_name/:pipeline_counter/:stage_name/:stage_counter/:job_name/*path_to_file'
+           List artifacts = '/go/files/:pipeline_name/:pipeline_counter/:stage_name/:stage_counter/:job_name.json'
+           Get artifact = '/go/files/:pipeline_name/:pipeline_counter/:stage_name/:stage_counter/:job_name/*path_to_file'
            """
         super().__init__()
 

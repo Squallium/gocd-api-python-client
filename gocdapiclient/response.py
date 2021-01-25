@@ -68,3 +68,20 @@ class BaseModel:
         for k, v in data.items():
             if hasattr(self, k):
                 setattr(self, k, v)
+
+
+class LinkModel(BaseModel):
+
+    def __init__(self, data) -> None:
+        self.self: HRefModel = None
+        self.doc: HRefModel = None
+        self.find: HRefModel = None
+
+        super().__init__(data)
+
+
+class HRefModel(BaseModel):
+    def __init__(self, data) -> None:
+        self.href: str = None
+
+        super().__init__(data)

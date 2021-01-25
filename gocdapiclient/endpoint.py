@@ -12,13 +12,34 @@ class Endpoint:
 
     def _get(self, path, api_version=Server.DEFAULT_VERSION, model_class=None):
         return self.server.request(Server.GET,
-                                   os.path.join(self.__get_base_path, path),
+                                   os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
                                    api_version=api_version,
                                    model_class=model_class)
 
     def _post(self, path, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
         return self.server.request(Server.POST,
-                                   os.path.join(self.__get_base_path, path),
+                                   os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
+                                   api_version=api_version,
+                                   body=body,
+                                   headers=headers,
+                                   model_class=model_class)
+
+    def _delete(self, api_version=Server.DEFAULT_VERSION, body={}, headers={}):
+        # if not body we should add this to the header
+        if not body:
+            headers.update({
+                'X-GoCD-Confirm': 'true'
+            })
+
+        return self.server.request(Server.DELETE,
+                                   self.__get_base_path,
+                                   api_version=api_version,
+                                   body=body,
+                                   headers=headers)
+
+    def _patch(self, path, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
+        return self.server.request(Server.PATCH,
+                                   os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
                                    api_version=api_version,
                                    body=body,
                                    headers=headers,

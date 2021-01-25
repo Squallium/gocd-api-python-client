@@ -10,11 +10,15 @@ class Server:
     # available api versions
     VERSION_V1 = 'v1'
     VERSION_V2 = 'v2'
+    VERSION_V3 = 'v3'
+    VERSION_V11 = 'v11'
 
     DEFAULT_VERSION = VERSION_V1
 
     GET = 'get'
     POST = 'post'
+    DELETE = 'delete'
+    PATCH = 'patch'
 
     def __init__(self, host=None, token=None, verify=None) -> None:
         super().__init__()
@@ -46,6 +50,15 @@ class Server:
                                      json=body,
                                      verify=self.verify,
                                      headers=final_headers)
+        elif method == self.DELETE:
+            response = requests.delete(url,
+                                       verify=self.verify,
+                                       headers=final_headers)
+        elif method == self.PATCH:
+            response = requests.patch(url,
+                                      json=body,
+                                      verify=self.verify,
+                                      headers=final_headers)
         else:
             raise NotImplementedError(f'Tipo {method} no implementado')
 

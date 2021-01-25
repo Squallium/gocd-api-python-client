@@ -1,9 +1,9 @@
 from gocdapiclient.endpoint import Endpoint
 from gocdapiclient.pipeline import PipelineModel
-from gocdapiclient.response import BaseModel
+from gocdapiclient.response import BaseModel, LinkModel
 
 
-class PipelineGroup(Endpoint):
+class PipelineGroupConfig(Endpoint):
     base_path = '/go/api/admin/pipeline_groups/'
 
     def __init__(self, server) -> None:
@@ -62,22 +62,7 @@ class PipelineGroupModel(BaseModel):
     def pipelines(self, value):
         if len(value) > 0:
             self.__pipelines = []
-            for stage in value:
-                self.__pipelines.append(PipelineModel(stage))
+            for pipeline in value:
+                self.__pipelines.append(PipelineModel(pipeline))
 
 
-class LinkModel(BaseModel):
-
-    def __init__(self, data) -> None:
-        self.self: HRefModel = None
-        self.doc: HRefModel = None
-        self.find: HRefModel = None
-
-        super().__init__(data)
-
-
-class HRefModel(BaseModel):
-    def __init__(self, data) -> None:
-        self.href: str = None
-
-        super().__init__(data)
