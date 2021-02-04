@@ -1,4 +1,5 @@
 import logging
+import urllib
 from urllib.parse import urljoin
 
 import requests
@@ -31,18 +32,19 @@ class Server:
             'Authorization': f'bearer {self.token}'
         }
 
-    def request(self, method, path, api_version, body={}, headers={}, model_class=None):
-        # construimos el header
+    def request(self, method, path, api_version, params=None, body={}, headers={}, model_class=None):
+        # creating the header
         final_headers = self.default_headers.copy()
         final_headers.update(headers)
         if api_version:
             final_headers['Accept'] = f'application/vnd.go.cd.{api_version}+json'
 
         url = urljoin(self.host, path)
-        logging.warning(url)
+        logging.warning(f'{url}{"?" + urllib.parse.urlencode(params, doseq=True) if params else ""}')
 
         if method == self.GET:
             response = requests.get(url,
+                                    params=params,
                                     verify=self.verify,
                                     headers=final_headers)
         elif method == self.POST:
@@ -60,6 +62,6 @@ class Server:
                                       verify=self.verify,
                                       headers=final_headers)
         else:
-            raise NotImplementedError(f'Tipo {method} no implementado')
+            raise NotImplementedError(f'Request method {method} no implemented')
 
         return Response.from_request(response, model_class=model_class)

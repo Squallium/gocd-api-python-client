@@ -10,19 +10,15 @@ class Endpoint:
     # for building parametric url paths
     _base_path = None
 
-    def _get(self, path, api_version=Server.DEFAULT_VERSION, model_class=None):
+    def _get(self, path=None, api_version=Server.DEFAULT_VERSION, params=None, model_class=None):
         return self.server.request(Server.GET,
                                    os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
-                                   api_version=api_version,
-                                   model_class=model_class)
+                                   api_version=api_version, params=params, model_class=model_class)
 
-    def _post(self, path, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
+    def _post(self, path=None, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
         return self.server.request(Server.POST,
                                    os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
-                                   api_version=api_version,
-                                   body=body,
-                                   headers=headers,
-                                   model_class=model_class)
+                                   api_version=api_version, body=body, headers=headers, model_class=model_class)
 
     def _delete(self, api_version=Server.DEFAULT_VERSION, body={}, headers={}):
         # if not body we should add this to the header
@@ -31,19 +27,13 @@ class Endpoint:
                 'X-GoCD-Confirm': 'true'
             })
 
-        return self.server.request(Server.DELETE,
-                                   self.__get_base_path,
-                                   api_version=api_version,
-                                   body=body,
+        return self.server.request(Server.DELETE, self.__get_base_path, api_version=api_version, body=body,
                                    headers=headers)
 
-    def _patch(self, path, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
+    def _patch(self, path=None, api_version=Server.DEFAULT_VERSION, body={}, headers={}, model_class=None):
         return self.server.request(Server.PATCH,
                                    os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
-                                   api_version=api_version,
-                                   body=body,
-                                   headers=headers,
-                                   model_class=model_class)
+                                   api_version=api_version, body=body, headers=headers, model_class=model_class)
 
     @property
     def __get_base_path(self):
