@@ -22,6 +22,7 @@ class EnvironmentConfig(Endpoint):
     def get_all(self):
         result = None
         if self.pipeline_name:
+            # TODO maybe there is another cooler way of doing this
             logging.info('Pipeline name should not be define for this request')
         else:
             result = self._get('', api_version=Server.VERSION_V3, model_class=EnvironmentsModel)
