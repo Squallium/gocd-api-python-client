@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from gocdapiclient.endpoint import Endpoint
 from gocdapiclient.response import BaseModel
 
@@ -86,34 +88,13 @@ class Pipeline(Endpoint):
 
         return self._post('schedule', body=body, headers=headers)
 
-    def history(self, page_size=None, after=None, before=None):
-        return self._get('history', model_class=PipelineHistoryModel)
-
-
-class PipelineHistoryModel(BaseModel):
-
-    def __init__(self, data) -> None:
-        self.__pipelines: [PipelineModel] = None
-
-        super().__init__(data)
-
-    @property
-    def pipelines(self):
-        return self.__pipelines
-
-    @pipelines.setter
-    def pipelines(self, value):
-        if len(value) > 0:
-            self.__pipelines = []
-            for pipeline in value:
-                self.__pipelines.append(PipelineModel(pipeline))
-
 
 class PipelineModel(BaseModel):
 
     def __init__(self, data) -> None:
         self.name: str = None
         self.counter: int = None
+        self.__scheduled_date: datetime = None
         self.__stages: [StageModel] = None
 
         super().__init__(data)
@@ -128,6 +109,14 @@ class PipelineModel(BaseModel):
             self.__stages = []
             for stage in value:
                 self.__stages.append(StageModel(stage))
+
+    @property
+    def scheduled_date(self):
+        return self.__scheduled_date
+
+    @scheduled_date.setter
+    def scheduled_date(self, value):
+        self.__scheduled_date = datetime.fromtimestamp(value / 1000.0)
 
 
 class StageModel(BaseModel):
