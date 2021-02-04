@@ -15,5 +15,8 @@ class PipelineConfig(Endpoint):
             pipeline_name=pipeline_name
         )
 
+    def get(self):
+        return self._get(api_version=Server.VERSION_V11)
+
     def delete(self):
         return self._delete(api_version=Server.VERSION_V11)

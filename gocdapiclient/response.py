@@ -1,4 +1,6 @@
 import re
+import urllib
+from urllib.parse import parse_qs
 
 from requests import Response
 
@@ -65,6 +67,9 @@ class BaseModel:
     def __init__(self, data) -> None:
         super().__init__()
 
+        # TODO maybe it will be unnecessary in the future
+        self.data = data
+
         for k, v in data.items():
             if hasattr(self, k):
                 setattr(self, k, v)
@@ -76,8 +81,19 @@ class LinkModel(BaseModel):
         self.self: HRefModel = None
         self.doc: HRefModel = None
         self.find: HRefModel = None
+        self.__next: HRefModel = None
+        self.previous: HRefModel = None
 
         super().__init__(data)
+
+    @property
+    def next(self):
+        return self.__next
+
+    @next.setter
+    def next(self, value):
+        if value:
+            self.__next = HRefModel(value)
 
 
 class HRefModel(BaseModel):
@@ -85,3 +101,11 @@ class HRefModel(BaseModel):
         self.href: str = None
 
         super().__init__(data)
+
+    @property
+    def after(self):
+        result = None
+        if self.href:
+            parsed = urllib.parse.urlparse(self.href)
+            result = parse_qs(parsed.query)['after']
+        return result
