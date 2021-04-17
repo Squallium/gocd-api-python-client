@@ -12,6 +12,7 @@ class Server:
     VERSION_V1 = 'v1'
     VERSION_V2 = 'v2'
     VERSION_V3 = 'v3'
+    VERSION_V4 = 'v4'
     VERSION_V11 = 'v11'
 
     DEFAULT_VERSION = VERSION_V1

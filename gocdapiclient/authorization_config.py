@@ -4,13 +4,13 @@ from gocdapiclient.server import Server
 
 
 class AuthorizationConfig(Endpoint):
+    base_path = '/go/api/admin/security/auth_configs'
+
     PLUGIN_ID_GOOGLE = 'cd.go.authorization.google'
 
     PLUGIN_KEY_CLIENT_ID = 'ClientId'
     PLUGIN_KEY_CLIENT_SECRET = 'ClientSecret'
     PLUGIN_KEY_ALLOWED_DOMAINS = 'AllowedDomains'
-
-    base_path = '/go/api/admin/security/auth_configs'
 
     def __init__(self, server) -> None:
         super().__init__()
@@ -27,17 +27,17 @@ class AuthorizationConfig(Endpoint):
 
     def create_google_authorization(self, auth_config_id, client_id, client_secret, allowed_domains):
         parameters = [{
-            'key': 'ClientId',
+            'key': self.PLUGIN_KEY_CLIENT_ID,
             'value': client_id
         }, {
-            'key': 'ClientSecret',
+            'key': self.PLUGIN_KEY_CLIENT_SECRET,
             'value': client_secret
         }, {
-            'key': 'AllowedDomains',
+            'key': self.PLUGIN_KEY_ALLOWED_DOMAINS,
             'value': allowed_domains
         }]
 
-        return self.__create(auth_config_id, 'cd.go.authorization.google', parameters)
+        return self.__create(auth_config_id, self.PLUGIN_ID_GOOGLE, parameters)
 
     def __create(self, auth_config_id, plugin_id, properties, allow_only_known_users_to_login=False):
 
@@ -71,8 +71,8 @@ class AuthorizationConfigsModel(BaseModel):
     def _embedded(self, value):
         if len(value['auth_configs']) > 0:
             self.auth_configs = []
-            for pipeline_group in value['auth_configs']:
-                self.auth_configs.append(AuthorizationConfigModel(pipeline_group))
+            for auth_config in value['auth_configs']:
+                self.auth_configs.append(AuthorizationConfigModel(auth_config))
 
 
 class AuthorizationConfigModel(BaseModel):
