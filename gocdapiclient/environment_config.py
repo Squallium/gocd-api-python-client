@@ -1,5 +1,3 @@
-import logging
-
 from gocdapiclient.endpoint import Endpoint
 from gocdapiclient.pipeline import PipelineModel
 from gocdapiclient.response import BaseModel, LinkModel
@@ -7,32 +5,29 @@ from gocdapiclient.server import Server
 
 
 class EnvironmentConfig(Endpoint):
-    base_path = '/go/api/admin/environments/{environment_name}'
+    base_path = '/go/api/admin/environments'
 
-    def __init__(self, server, environment_name='') -> None:
+    def __init__(self, server) -> None:
         super().__init__()
 
         self.server = server
-        self.pipeline_name = environment_name
-
-        self._base_path = self.base_path.format(
-            environment_name=environment_name
-        )
+        # self.pipeline_name = environment_name
+        #
+        # self._base_path = self.base_path.format(
+        #     environment_name=environment_name
+        # )
 
     def get_all(self):
-        result = None
-        if self.pipeline_name:
-            # TODO maybe there is another cooler way of doing this
-            logging.info('Pipeline name should not be define for this request')
-        else:
-            result = self._get('', api_version=Server.VERSION_V3, model_class=EnvironmentsModel)
-        return result
+        return self._get('', api_version=Server.VERSION_V3, model_class=EnvironmentsModel)
 
-    def get(self):
-        return self._get('', api_version=Server.VERSION_V3, model_class=EnvironmentModel)
+    def get(self, environment_name):
+        return self._get(environment_name, api_version=Server.VERSION_V3, model_class=EnvironmentModel)
 
-    def patch(self, body):
-        return self._patch('', api_version=Server.VERSION_V3, body=body, model_class=EnvironmentModel)
+    def patch(self, environment_name, body):
+        return self._patch(environment_name, api_version=Server.VERSION_V3, body=body, model_class=EnvironmentModel)
+
+    def create(self, body):
+        return self._post(api_version=Server.VERSION_V3, body=body, model_class=EnvironmentModel)
 
 
 class EnvironmentsModel(BaseModel):
@@ -143,3 +138,31 @@ class EnvironmentPatchModel:
             collection[key] = []
         collection[key].append(value)
 
+
+class EnvironmentCreateModel:
+
+    def __init__(self, environment_name) -> None:
+        super().__init__()
+
+        self.environment_name = environment_name
+        self.pipelines = []
+        self.environment_variables = []
+
+    def add_pipeline(self, pipeline_name):
+        self.pipelines.append({
+            'name': pipeline_name
+        })
+
+    def add_env_var(self, name, value, secure=False):
+        self.environment_variables.append({
+            'name': name,
+            'value': value,
+            'secure': secure
+        })
+
+    def body(self):
+        return {
+            'name': self.environment_name,
+            'pipelines': self.pipelines,
+            'environment_variables': self.environment_variables
+        }

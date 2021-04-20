@@ -109,3 +109,29 @@ class HRefModel(BaseModel):
             parsed = urllib.parse.urlparse(self.href)
             result = parse_qs(parsed.query)['after']
         return result
+
+
+class EmbeddedModel(BaseModel):
+    def __init__(self, data, values_key, values_model) -> None:
+        self._links: LinkModel = None
+
+        self.__values_key = values_key
+        self.__values_model = values_model
+        self._values = []
+
+        super().__init__(data)
+
+    @property
+    def links(self):
+        return self._links
+
+    @property
+    def _embedded(self):
+        return None
+
+    @_embedded.setter
+    def _embedded(self, value):
+        if len(value[self.__values_key]) > 0:
+            self._values = []
+            for pipeline_group in value[self.__values_key]:
+                self._values.append(self.__values_model(pipeline_group))
