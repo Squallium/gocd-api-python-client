@@ -19,6 +19,7 @@ class Server:
 
     GET = 'get'
     POST = 'post'
+    PUT = 'put'
     DELETE = 'delete'
     PATCH = 'patch'
 
@@ -53,6 +54,11 @@ class Server:
                                      json=body,
                                      verify=self.verify,
                                      headers=final_headers)
+        elif method == self.PUT:
+            response = requests.put(url,
+                                    json=body,
+                                    verify=self.verify,
+                                    headers=final_headers)
         elif method == self.DELETE:
             response = requests.delete(url,
                                        verify=self.verify,

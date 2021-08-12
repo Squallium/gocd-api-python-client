@@ -20,6 +20,15 @@ class Endpoint:
                                    os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
                                    api_version=api_version, body=body, headers=headers, model_class=model_class)
 
+    def _put(self, path=None, api_version=Server.DEFAULT_VERSION, body={}, headers={}, if_match=None, model_class=None):
+        if if_match:
+            headers.update({
+                'If-Match': if_match
+            })
+        return self.server.request(Server.PUT,
+                                   os.path.join(self.__get_base_path, path) if path else self.__get_base_path,
+                                   api_version=api_version, body=body, headers=headers, model_class=model_class)
+
     def _delete(self, api_version=Server.DEFAULT_VERSION, body={}, headers={}):
         # if not body we should add this to the header
         if not body:
