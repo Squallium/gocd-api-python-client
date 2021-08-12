@@ -34,6 +34,10 @@ class Response:
                                        re.match(r'application/vnd.go.cd.v(\d+)\+json', self.content_type)))
 
     @property
+    def e_tag(self):
+        return self.headers.get('ETag', None)
+
+    @property
     def payload(self):
         result = None
         if self._body is not None:  # TODO stranger thing ever happen to me
