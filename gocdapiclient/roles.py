@@ -20,6 +20,9 @@ class Roles(Endpoint):
     def create(self, body):
         return self._post(api_version=Server.VERSION_V3, body=body, model_class=RoleModel)
 
+    def update(self, role_name, body, if_match=None):
+        return self._put(role_name, api_version=Server.VERSION_V3, body=body, model_class=RoleModel, if_match=if_match)
+
 
 class RolesModel(EmbeddedModel):
 
@@ -39,6 +42,7 @@ class RoleModel(BaseModel):
 
         self.__attributes = None
         self.__users = []
+        self.__policy: [PolicyEntryModel] = []
 
         super().__init__(data)
 
@@ -59,6 +63,28 @@ class RoleModel(BaseModel):
         self.__attributes = value
         if 'users' in value:
             self.__users = value['users']
+
+    @property
+    def policy(self):
+        return self.__policy
+
+    @policy.setter
+    def policy(self, value):
+        if len(value) > 0:
+            self.__policy = []
+            for policy_entry in value:
+                self.__policy.append(PolicyEntryModel(policy_entry))
+
+
+class PolicyEntryModel(BaseModel):
+
+    def __init__(self, data) -> None:
+        self.permission: str = None
+        self.action: str = None
+        self.type: str = None
+        self.resource: str = None
+
+        super().__init__(data)
 
 
 class RoleCreateModel:

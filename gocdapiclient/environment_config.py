@@ -29,6 +29,10 @@ class EnvironmentConfig(Endpoint):
     def create(self, body):
         return self._post(api_version=Server.VERSION_V3, body=body, model_class=EnvironmentModel)
 
+    def update(self, environment_name, body, if_match=None):
+        return self._put(environment_name, api_version=Server.VERSION_V3, body=body, model_class=EnvironmentModel,
+                         if_match=if_match)
+
 
 class EnvironmentsModel(BaseModel):
 
