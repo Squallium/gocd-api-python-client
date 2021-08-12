@@ -127,6 +127,26 @@ class StageModel(BaseModel):
         self.status: str = None
         self.name: str = None
         self.counter: str = None
+        self.__jobs: [JobModel] = None
+
+        super().__init__(data)
+
+    @property
+    def jobs(self):
+        return self.__jobs
+
+    @jobs.setter
+    def jobs(self, value):
+        if len(value) > 0:
+            self.__jobs = []
+            for job in value:
+                self.__jobs.append(StageModel(job))
+
+
+class JobModel(BaseModel):
+
+    def __init__(self, data) -> None:
+        self.name: str = None
 
         super().__init__(data)
 
