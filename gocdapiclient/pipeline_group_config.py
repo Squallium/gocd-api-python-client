@@ -22,6 +22,9 @@ class PipelineGroupConfig(Endpoint):
     def create(self, body):
         return self._post(body=body, model_class=PipelineGroupModel)
 
+    def update(self, pipeline_group_name, body, if_match=None):
+        return self._put(pipeline_group_name, body=body, model_class=PipelineGroupModel, if_match=if_match)
+
 class PipelineGroupsModel(BaseModel):
 
     def __init__(self, data) -> None:

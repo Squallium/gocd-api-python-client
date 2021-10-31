@@ -89,15 +89,59 @@ class Pipeline(Endpoint):
         return self._post('schedule', body=body, headers=headers)
 
 
+class MaterialAttrsModel(BaseModel):
+    def __init__(self, data) -> None:
+        self.url: str = None
+        self.destination: str = None
+        self.filter: str = None
+        self.invert_filter: bool = None
+        self.name: str = None
+        self.auto_update: bool = None
+        self.branch: str = None
+        self.submodule_folder: str = None
+        self.shallow_clone: bool = None
+
+        super().__init__(data)
+
+
+class MaterialModel(BaseModel):
+
+    def __init__(self, data) -> None:
+        self.type: str = None
+        self.__attributes: [MaterialAttrsModel] = None
+
+        super().__init__(data)
+
+    @property
+    def attributes(self):
+        return self.__attributes
+
+    @attributes.setter
+    def attributes(self, value):
+        self.__attributes = MaterialAttrsModel(value)
+
+
 class PipelineModel(BaseModel):
 
     def __init__(self, data) -> None:
         self.name: str = None
         self.counter: int = None
         self.__scheduled_date: datetime = None
+        self.__materials: [MaterialModel] = None
         self.__stages: [StageModel] = None
 
         super().__init__(data)
+
+    @property
+    def materials(self):
+        return self.__materials
+
+    @materials.setter
+    def materials(self, value):
+        if len(value) > 0:
+            self.__materials = []
+            for material in value:
+                self.__materials.append(MaterialModel(material))
 
     @property
     def stages(self):
