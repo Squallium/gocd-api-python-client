@@ -2,6 +2,7 @@ from datetime import datetime
 
 from gocdapiclient.endpoint import Endpoint
 from gocdapiclient.response import BaseModel
+from gocdapiclient.server import Server
 
 
 class Pipeline(Endpoint):
@@ -22,7 +23,7 @@ class Pipeline(Endpoint):
             A wrapper for the "Go Pipeline API"
             status -> GET /go/api/pipelines/:pipeline_name/status
         """
-        return self._get('status', api_version=None, model_class=PipelineStatusModel)
+        return self._get('status', api_version=Server.VERSION_V1, model_class=PipelineStatusModel)
 
     def pause(self, pause_cause=None):
         body = {}

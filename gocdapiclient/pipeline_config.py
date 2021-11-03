@@ -86,6 +86,10 @@ class PipelineConfigHelper:
             'jobs': []
         }
 
+    def add_stage_env_var(self, stage_name, name, value, secure=False):
+        if stage_name in self.stages.keys():
+            self.__add_env_var(self.stages[stage_name]['environment_variables'], name, value, secure)
+
     def add_job(self, stage_name, name, timeout):
         if stage_name in self.stages.keys():
             if stage_name not in self.jobs.keys():
@@ -126,7 +130,7 @@ class PipelineConfigHelper:
         }
 
         if working_directory:
-            result['working_directory'] = working_directory
+            result['attributes']['working_directory'] = working_directory
 
         return result
 
