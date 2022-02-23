@@ -32,6 +32,10 @@ class PipelineConfig(Endpoint):
 
 class PipelineConfigHelper:
 
+    RUN_IF_PASSED = 'passed'
+    RUN_IF_FAILED = 'failed'
+    RUN_IF_ANY = 'any'
+
     def __init__(self, pipeline_group_name, pipeline_name) -> None:
         super().__init__()
 
@@ -90,7 +94,7 @@ class PipelineConfigHelper:
         if stage_name in self.stages.keys():
             self.__add_env_var(self.stages[stage_name]['environment_variables'], name, value, secure)
 
-    def add_job(self, stage_name, name, timeout):
+    def add_job(self, stage_name, name, timeout=60):
         if stage_name in self.stages.keys():
             if stage_name not in self.jobs.keys():
                 self.jobs[stage_name] = OrderedDict()
@@ -110,7 +114,7 @@ class PipelineConfigHelper:
             logging.error(f'Stage {stage_name} not found')
 
     def add_job_env_var(self, stage_name, job_name, name, value, secure=False):
-        if stage_name in self.stages.keys() and job_name in self.jobs.keys():
+        if stage_name in self.stages.keys() and job_name in self.jobs[stage_name].keys():
             self.__add_env_var(self.jobs[stage_name][job_name]['environment_variables'], name, value, secure)
 
     def add_job_task(self, stage_name, job_name, task, on_cancel=None):
@@ -118,12 +122,19 @@ class PipelineConfigHelper:
             task['on_cancel'] = on_cancel
         self.jobs[stage_name][job_name]['tasks'].append(task)
 
+    def add_job_artifact(self, stage_name, job_name, source, destination, artifact_type):
+        self.jobs[stage_name][job_name]['artifacts'].append({
+            'source': source,
+            'destination': destination,
+            'type': artifact_type
+        })
+
     @staticmethod
-    def generate_task(task_type, command, arguments, working_directory=None):
+    def generate_task(task_type, command, arguments, working_directory=None, run_if=RUN_IF_PASSED):
         result = {
             'type': task_type,
             'attributes': {
-                'run_if': ['passed'],
+                'run_if': [run_if],
                 'command': command,
                 'arguments': arguments
             }
@@ -131,6 +142,24 @@ class PipelineConfigHelper:
 
         if working_directory:
             result['attributes']['working_directory'] = working_directory
+
+        return result
+
+    @staticmethod
+    def generate_fetch_task(pipeline_name, stage_name, job_name, source, destination):
+        result = {
+            "type": "fetch",
+            "attributes": {
+                "artifact_origin": "gocd",
+                "pipeline": pipeline_name,
+                "stage": stage_name,
+                "job": job_name,
+                "run_if": ["passed"],
+                "is_source_a_file": True,
+                "source": source,
+                "destination": destination
+            }
+        }
 
         return result
 
