@@ -76,7 +76,7 @@ class PipelineConfigHelper:
 
         self.materials.append(material)
 
-    def add_stage(self, name, approval_type=APPROVAL_TYPE_MANUAL):
+    def add_stage(self, name, approval_type=APPROVAL_TYPE_SUCCESS):
         self.stages[name] = {
             'name': name,
             'fetch_materials': True,
