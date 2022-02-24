@@ -32,6 +32,9 @@ class PipelineConfig(Endpoint):
 
 class PipelineConfigHelper:
 
+    APPROVAL_TYPE_SUCCESS = 'success'
+    APPROVAL_TYPE_MANUAL = 'manual'
+
     RUN_IF_PASSED = 'passed'
     RUN_IF_FAILED = 'failed'
     RUN_IF_ANY = 'any'
@@ -73,14 +76,14 @@ class PipelineConfigHelper:
 
         self.materials.append(material)
 
-    def add_stage(self, name):
+    def add_stage(self, name, approval_type=APPROVAL_TYPE_MANUAL):
         self.stages[name] = {
             'name': name,
             'fetch_materials': True,
             'clean_working_directory': True,
             'never_cleanup_artifacts': True,
             'approval': {
-                'type': 'success',
+                'type': approval_type,
                 'authorization': {
                     'roles': [],
                     'users': []
