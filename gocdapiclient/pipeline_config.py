@@ -76,11 +76,11 @@ class PipelineConfigHelper:
 
         self.materials.append(material)
 
-    def add_stage(self, name, approval_type=APPROVAL_TYPE_SUCCESS):
+    def add_stage(self, name, approval_type=APPROVAL_TYPE_SUCCESS, clean_working_directory=True):
         self.stages[name] = {
             'name': name,
             'fetch_materials': True,
-            'clean_working_directory': True,
+            'clean_working_directory': clean_working_directory,
             'never_cleanup_artifacts': True,
             'approval': {
                 'type': approval_type,
