@@ -53,26 +53,42 @@ class PipelineConfigHelper:
     def add_env_var(self, name, value, secure=False):
         self.__add_env_var(self.environment_variables, name, value, secure)
 
-    def add_material(self, mat_type, url, destination, name, branch, ignore=None):
-        material = {
-            'type': mat_type,
-            'attributes': {
-                'url': url,
-                'destination': destination,
-                'filter': None,
-                'invert_filter': False,
-                'name': name,
-                'auto_update': True,
-                'branch': branch,
-                'submodule_folder': None,
-                'shallow_clone': True
+    def add_material(self, mat_type, url, destination, name, branch, pipeline=None, stage=None, ignore=None):
+        if mat_type == 'git':
+            material = {
+                'type': mat_type,
+                'attributes': {
+                    'url': url,
+                    'destination': destination,
+                    'filter': None,
+                    'invert_filter': False,
+                    'name': name,
+                    'auto_update': True,
+                    'branch': branch,
+                    'submodule_folder': None,
+                    'shallow_clone': True
+                }
             }
-        }
 
-        if ignore:
-            material['attributes']['filter'] = {
-                'ignore': ignore
+            if ignore:
+                material['attributes']['filter'] = {
+                    'ignore': ignore
+                }
+
+        elif mat_type == 'dependency':
+            material = {
+                'type': mat_type,
+                'attributes': {
+                    'pipeline': pipeline,
+                    'stage': stage,
+                    'name': name
+                }
             }
+
+            if ignore:
+                material['attributes']['filter'] = {
+                    'ignore_for_scheduling': ignore
+                }
 
         self.materials.append(material)
 
