@@ -199,7 +199,7 @@ class PipelineConfigHelper:
             'group': self.pipeline_group_name,
             'pipeline': {
                 'label_template': '${COUNT}',
-                'lock_behavior': 'unlockWhenFinished',
+                'lock_behavior': 'none',
                 'name': self.pipeline_name,
                 'template': None,
                 'environment_variables': self.environment_variables,
